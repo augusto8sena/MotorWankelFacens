@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motor Wankel — FACENS</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#4FC3F7;--blue-bright:#00E5FF;--blue-deep:#0288D1;
+  --blue-glow:rgba(79,195,247,0.35);
+  --bg:#060a10;--bg2:#0a0f1a;--bg3:#0d1520;
+  --text:#e8f4fb;--text-dim:#7da8c4;
+  --led-on:#4FC3F7;--led-off:#112233;
+  --glass-bg:rgba(10,20,40,0.55);
+  --glass-border:rgba(79,195,247,0.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--blue-deep);border-radius:3px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.4}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 2rem;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,12,22,0.45);
+  backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);
+  border-bottom:1px solid rgba(79,195,247,0.12);
+  box-shadow:0 4px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05)}
+nav::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(79,195,247,.5),transparent)}
+.nav-logo{font-size:1.05rem;font-weight:800;letter-spacing:.08em;color:var(--text);display:flex;align-items:center;gap:.6rem}
+.nav-logo span{color:var(--blue);text-shadow:0 0 12px var(--blue)}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{color:var(--text-dim);font-size:.72rem;font-weight:600;text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .25s,text-shadow .25s}
+.nav-links a:hover{color:var(--blue);text-shadow:0 0 12px var(--blue)}
+.nav-facens{font-size:.72rem;font-weight:700;letter-spacing:.12em;color:var(--blue);opacity:.8;text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.nav-facens img{height:28px;opacity:.85}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:2px;background:var(--blue);border-radius:2px;transition:.3s}
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(2,136,209,.12) 0%,transparent 70%)}
+.hero-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(79,195,247,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(79,195,247,.04) 1px,transparent 1px);
+  background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;padding:2rem;max-width:860px}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);border-radius:100px;padding:.35rem 1.1rem;margin-bottom:2rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);animation:fadeUp .8s ease both}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);animation:pulse 1.5s infinite}
+.hero-title{font-size:clamp(2.8rem,8vw,6.5rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:1.2rem;animation:fadeUp .8s .15s ease both}
+.hero-title .line1{display:block;color:var(--text)}
+.hero-title .line2{display:block;color:var(--blue);text-shadow:0 0 40px rgba(79,195,247,.5)}
+.hero-sub{font-size:1.05rem;font-weight:400;color:var(--text-dim);max-width:540px;margin:0 auto 2.5rem;animation:fadeUp .8s .3s ease both}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .45s ease both}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all .25s}
+.btn-primary{background:linear-gradient(135deg,var(--blue-deep),var(--blue));color:#fff;box-shadow:0 0 24px rgba(79,195,247,.3)}
+.btn-primary:hover{box-shadow:0 0 40px rgba(79,195,247,.6);transform:translateY(-2px)}
+.btn-outline{background:transparent;border:1px solid rgba(79,195,247,.35);color:var(--blue)}
+.btn-outline:hover{background:rgba(79,195,247,.1);border-color:var(--blue);box-shadow:0 0 20px rgba(79,195,247,.2)}
+/* SECTIONS */
+section{position:relative;z-index:1;padding:6rem 0}
+.container{max-width:1180px;margin:0 auto;padding:0 2rem}
+.section-label{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem}
+.section-label::before{content:'';width:28px;height:1px;background:var(--blue)}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.01em}
+.section-title em{color:var(--blue);font-style:normal}
+.led-row{display:flex;gap:6px;margin-bottom:1.5rem}
+.led{width:8px;height:8px;border-radius:50%;background:var(--led-off);transition:.3s}
+.led.on{background:var(--led-on);box-shadow:0 0 8px var(--blue),0 0 16px rgba(79,195,247,.4)}
+.glass{background:var(--glass-bg);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid var(--glass-border);border-radius:16px}
+/* ABOUT */
+#about{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.about-text p{color:var(--text-dim);margin-bottom:1rem;font-size:.95rem}
+.about-text p strong{color:var(--text);font-weight:700}
+.inventor-card{padding:2rem;text-align:center}
+.inventor-avatar{width:200px;height:200px;border-radius:50%;margin:0 auto 1rem;background:linear-gradient(135deg,#0a2040,#1565C0);border:2px solid var(--blue);box-shadow:0 0 30px rgba(79,195,247,.3);display:flex;align-items:center;justify-content:center;font-size:3rem;overflow:hidden}
+.inventor-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.inventor-name{font-size:1.15rem;font-weight:800;color:var(--text)}
+.inventor-dates{font-size:.78rem;color:var(--blue);letter-spacing:.1em;margin-top:.25rem}
+.inventor-bio{font-size:.85rem;color:var(--text-dim);margin-top:1rem;line-height:1.6}
+/* HOW */
+#how{background:var(--bg2)}
+.engine-interactive{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;margin-top:3rem}
+.engine-canvas-wrap{position:relative;width:100%;max-width:420px;margin:0 auto}
+.engine-canvas-wrap canvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid rgba(79,195,247,.15);background:#060a10}
+.glow-ring{position:absolute;inset:-2px;border-radius:18px;pointer-events:none;
+  background:conic-gradient(from var(--a,0deg),transparent 60%,rgba(79,195,247,.4) 80%,transparent 100%);
+  animation:spin 4s linear infinite;z-index:-1}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes spin{to{--a:360deg}}
+.phase-panel{display:flex;flex-direction:column;gap:.8rem}
+.phase-btn{padding:1rem 1.2rem;border-radius:12px;border:1px solid rgba(79,195,247,.12);background:rgba(10,20,40,.5);cursor:pointer;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:600;color:var(--text-dim);text-align:left;transition:all .3s;display:flex;align-items:flex-start;gap:.8rem}
+.phase-btn:hover,.phase-btn.active{background:rgba(79,195,247,.1);border-color:var(--blue);color:var(--text);box-shadow:0 0 20px rgba(79,195,247,.15)}
+.phase-icon{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:rgba(79,195,247,.08)}
+.phase-btn.active .phase-icon{background:rgba(79,195,247,.2)}
+.phase-info{flex:1}
+.phase-name{font-size:.85rem;font-weight:700;color:var(--text)}
+.phase-btn.active .phase-name{color:var(--blue);text-shadow:0 0 8px rgba(79,195,247,.5)}
+.phase-desc{font-size:.75rem;color:var(--text-dim);margin-top:.2rem;line-height:1.5}
+.phase-number{width:22px;height:22px;border-radius:50%;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);font-size:.7rem;font-weight:800;color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.phase-btn.active .phase-number{background:var(--blue);color:#000}
+/* COMPARISON */
+#comparison{background:var(--bg)}
+.comp-table-wrap{margin-top:2.5rem;border-radius:14px;overflow:hidden;border:1px solid rgba(79,195,247,.12);background:rgba(10,20,40,.5)}
+.comp-head-row{display:grid;grid-template-columns:210px 1fr 1fr}
+.comp-head-cell{padding:1rem 1.2rem;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.comp-head-cell.lbl{color:var(--text-dim)}
+.comp-head-cell.wankel{color:var(--blue);background:rgba(79,195,247,.07);border-left:1px solid rgba(79,195,247,.12);border-right:1px solid rgba(79,195,247,.12);text-align:center}
+.comp-head-cell.piston{color:#FFB74D;background:rgba(255,160,80,.05);text-align:center}
+.comp-data-row{display:grid;grid-template-columns:210px 1fr 1fr;border-top:1px solid rgba(255,255,255,.04)}
+.comp-data-row:nth-child(even){background:rgba(255,255,255,.015)}
+.comp-cell-lbl{padding:.8rem 1.2rem;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center}
+.comp-cell-val{padding:.8rem 1.2rem;font-size:.78rem;color:var(--text-dim);text-align:center;display:flex;align-items:center;justify-content:center;gap:.4rem;border-left:1px solid rgba(255,255,255,.04)}
+.comp-cell-val.good{color:#81C784}
+.comp-cell-val.bad{color:#EF9A9A}
+.comp-cell-val.ok{color:var(--text-dim)}
+/* BAR CHARTS */
+.bar-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.bar-card{background:rgba(10,20,40,.6);border:1px solid rgba(79,195,247,.1);border-radius:14px;padding:1.4rem}
+.bar-card-title{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.3rem}
+.bar-item{margin-bottom:1.1rem}
+.bar-item:last-child{margin-bottom:0}
+.bar-labels{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text-dim);margin-bottom:.35rem;font-weight:600}
+.bar-labels .bl{color:var(--blue)}
+.bar-labels .bo{color:#FFB74D}
+.bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;margin-bottom:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.bf-blue{background:linear-gradient(90deg,var(--blue-deep),var(--blue))}
+.bf-orange{background:linear-gradient(90deg,#E65100,#FF9800)}
+/* TIMELINE */
+#timeline{background:var(--bg3)}
+.timeline-wrap{position:relative;margin-top:3rem;padding:1rem 0}
+.timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--blue-deep) 10%,var(--blue) 50%,var(--blue-deep) 90%,transparent);transform:translateX(-50%)}
+.tl-item{display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:all .6s ease}
+.tl-item.visible{opacity:1;transform:translateY(0)}
+.tl-item:nth-child(odd) .tl-content{grid-column:1;text-align:right;padding-right:2rem}
+.tl-item:nth-child(odd) .tl-empty{grid-column:3}
+.tl-item:nth-child(even) .tl-content{grid-column:3;text-align:left;padding-left:2rem}
+.tl-item:nth-child(even) .tl-empty{grid-column:1}
+.tl-node{grid-column:2;display:flex;align-items:center;justify-content:center;z-index:2}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--bg3);border:2px solid var(--blue);box-shadow:0 0 12px var(--blue-glow);transition:all .3s}
+.tl-item.visible .tl-dot{box-shadow:0 0 20px var(--blue),0 0 40px rgba(79,195,247,.3)}
+.tl-year{font-size:1.3rem;font-weight:900;color:var(--blue);letter-spacing:-.02em;margin-bottom:.3rem}
+.tl-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.tl-text{font-size:.78rem;color:var(--text-dim);line-height:1.5}
+/* CARS */
+#cars{background:var(--bg2)}
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4rem;margin-top:2rem}
+.car-card{border-radius:16px;overflow:hidden;background:rgba(10,20,40,.7);border:1px solid rgba(79,195,247,.1);transition:all .35s}
+.car-card:hover{border-color:rgba(79,195,247,.35);box-shadow:0 0 40px rgba(79,195,247,.12);transform:translateY(-5px)}
+.car-img{width:100%;height:450px;background:linear-gradient(135deg,#0a1828,#0d2035);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(79,195,247,.1);position:relative;overflow:hidden}
+.car-img img{width:100%;height:100%;object-fit:cover}
+.car-img-placeholder{font-size:4rem;opacity:.15}
+.car-img-label{position:absolute;bottom:.7rem;right:.9rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(79,195,247,.4)}
+.car-body{padding:1.4rem}
+.car-brand{font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.2rem}
+.car-name{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:.2rem}
+.car-years{font-size:.75rem;color:var(--text-dim);margin-bottom:1rem}
+.car-specs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.cs{background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.08);border-radius:8px;padding:.5rem .7rem}
+.cs-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim)}
+.cs-value{font-size:.82rem;font-weight:700;color:var(--text);margin-top:.1rem}
+/* PROBLEMS */
+#problems{background:var(--bg3)}
+.problems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2rem}
+.prob-card{padding:1.5rem;border-radius:14px;border:1px solid rgba(255,80,80,.12);background:rgba(40,10,10,.4);position:relative;overflow:hidden;transition:all .35s}
+.prob-card:hover{border-color:rgba(255,80,80,.3);box-shadow:0 0 25px rgba(255,80,80,.08)}
+.prob-num{font-size:2.5rem;font-weight:900;color:rgba(255,80,80,.12);position:absolute;top:.8rem;right:1rem;line-height:1;letter-spacing:-.05em}
+.prob-icon{font-size:1.5rem;margin-bottom:.8rem}
+.prob-title{font-size:.9rem;font-weight:700;color:#ff8080;margin-bottom:.5rem}
+.prob-text{font-size:.8rem;color:var(--text-dim);line-height:1.6}
+/* TEAM */
+#team{background:var(--bg2)}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;margin-top:2rem}
+.team-card{padding:1.8rem 1.2rem;border-radius:16px;text-align:center;background:rgba(10,20,40,.6);border:1px solid rgba(79,195,247,.1);transition:all .35s}
+.team-card:hover{border-color:rgba(79,195,247,.4);box-shadow:0 0 35px rgba(79,195,247,.15);transform:translateY(-5px)}
+.team-avatar{width:90px;height:90px;border-radius:50%;margin:0 auto .9rem;border:2px solid rgba(79,195,247,.2);background:linear-gradient(135deg,#0a1a30,#0d2a4a);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:var(--blue);transition:.35s}
+.team-card:hover .team-avatar{border-color:var(--blue);box-shadow:0 0 20px rgba(79,195,247,.35)}
+.team-name{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.team-role{font-size:.72rem;color:var(--text-dim);letter-spacing:.05em}
+.team-linkedin{display:inline-flex;align-items:center;gap:.35rem;margin-top:.8rem;padding:.4rem .9rem;border-radius:100px;background:rgba(10,102,194,.15);border:1px solid rgba(10,102,194,.3);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4FC3F7;text-decoration:none;transition:.25s}
+.team-linkedin:hover{background:rgba(10,102,194,.3);border-color:#4FC3F7}
+footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:1px solid rgba(79,195,247,.08)}
+.footer-logo{font-size:1.3rem;font-weight:900;color:var(--text);margin-bottom:.5rem}
+.footer-logo span{color:var(--blue)}
+.footer-text{font-size:.78rem;color:var(--text-dim)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes ledBlink{0%,100%{box-shadow:0 0 8px var(--blue),0 0 16px rgba(79,195,247,.4)}50%{box-shadow:0 0 4px var(--blue)}}
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+.scroll-indicator{position:fixed;top:0;left:0;height:3px;z-index:2000;background:linear-gradient(90deg,var(--blue-deep),var(--blue-bright));box-shadow:0 0 8px var(--blue);transition:width .1s;width:0}
+@media(max-width:900px){
+  .about-grid,.engine-interactive,.comp-head-row,.comp-data-row,.bar-grid{grid-template-columns:1fr}
+  .comp-head-row,.comp-data-row{grid-template-columns:140px 1fr 1fr}
+  .timeline-line{left:24px}
+  .tl-item{grid-template-columns:48px 1fr}
+  .tl-item:nth-child(odd) .tl-content,.tl-item:nth-child(even) .tl-content{grid-column:2;text-align:left;padding-left:1.5rem;padding-right:0}
+  .tl-item:nth-child(odd) .tl-empty,.tl-item:nth-child(even) .tl-empty{display:none}
+  .tl-node{grid-column:1;justify-content:flex-start;padding-left:18px}
+  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:rgba(6,12,22,.97);border-bottom:1px solid rgba(79,195,247,.12);padding:1rem 0}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:.8rem 2rem}
+  .hamburger{display:flex}
+}
+@media(max-width:600px){
+  section{padding:4rem 0}
+  .cars-grid,.team-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-title{font-size:2.5rem}
+  .comp-head-row,.comp-data-row{grid-template-columns:100px 1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="scroll-indicator" id="scrollBar"></div>
+
+<nav>
+  <div class="nav-logo"> </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">Origem</a></li>
+    <li><a href="#how">Funcionamento</a></li>
+    <li><a href="#comparison">Comparação</a></li>
+    <li><a href="#timeline">Cronologia</a></li>
+    <li><a href="#cars">Automóveis</a></li>
+    <li><a href="#problems">Problemas</a></li>
+    <li><a href="#team">Equipe</a></li>
+  </ul>
+  <div class="nav-facens"><img src="midia/facens.png" alt="FACENS"></div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Engenharia Mecânica · FACENS 2025</div>
+    <h1 class="hero-title">
+      <span class="line1">Motor</span>
+      <span class="line2">Wankel</span>
+    </h1>
+    <p class="hero-sub">O motor rotativo que revolucionou a engenharia automotiva com seu design compacto, alto desempenho e princípio de funcionamento único.</p>
+    <div class="hero-ctas">
+      <a href="#how" class="btn btn-primary">▶ Ver Funcionamento</a>
+      <a href="#comparison" class="btn btn-outline">Comparação →</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <div class="section-label">Origem &amp; Inventor</div>
+        <h2 class="section-title">Felix <em>Wankel</em></h2>
+        <div class="led-row"><div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led"></div><div class="led"></div></div>
+        <p>O Motor Wankel é um motor de combustão interna de ciclo de quatro tempos com geometria rotativa. Diferente dos motores alternativos convencionais, ele utiliza um <strong>rotor triangular</strong> que gira excêntrico dentro de uma câmara em formato epitrocóide.</p>
+        <p>Criado pelo engenheiro alemão Felix Wankel em parceria com a <strong>NSU Motorenwerke AG</strong>, o motor foi patenteado em 1954 e testado pela primeira vez com sucesso em <strong>1957</strong>. O DKM 54 foi o primeiro protótipo operacional.</p>
+        <p>A principal vantagem reside na sua <strong>simplicidade mecânica</strong>: apenas três partes móveis principais contra centenas nos motores convencionais, resultando em operação suave, vibração reduzida e excelente relação peso-potência.</p>
+      </div>
+      <div class="glass inventor-card fade-in">
+        <div class="inventor-avatar"><img src="midia/criador.png" alt="Felix Wankel"></div>
+        <div class="inventor-name">Felix Wankel</div>
+        <div class="inventor-dates">13 Aug 1902 — 09 Oct 1988</div>
+        <div class="led-row" style="justify-content:center;margin-top:.8rem">
+          <div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div>
+        </div>
+        <div class="inventor-bio">Engenheiro e inventor alemão autodidata. Sem formação universitária formal, tornou-se um dos maiores inovadores da engenharia de motores do século XX. Recebeu o título de Doutor Honoris Causa da Universidade Técnica de Munique.</div>
+        <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+          <div style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.1);border-radius:8px;padding:.7rem;text-align:center">
+            <div style="font-size:1.2rem;font-weight:900;color:var(--blue)">1957</div>
+            <div style="font-size:.68rem;color:var(--text-dim)">Primeiro teste</div>
+          </div>
+          <div style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.1);border-radius:8px;padding:.7rem;text-align:center">
+            <div style="font-size:1.2rem;font-weight:900;color:var(--blue)">1964</div>
+            <div style="font-size:.68rem;color:var(--text-dim)">Primeiro carro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Princípio de Funcionamento</div>
+      <h2 class="section-title">Motor <em>Rotativo</em></h2>
+      <p style="color:var(--text-dim);max-width:600px;font-size:0.92rem;margin-bottom:.5rem">Selecione cada fase para visualizar o processo na animação. O rotor triangular cria três câmaras que executam os quatro ciclos simultaneamente.</p>
+    </div>
+    <div class="engine-interactive">
+      <div class="engine-canvas-wrap fade-in">
+        <div class="glow-ring"></div>
+        <canvas id="wankelCanvas" width="420" height="420"></canvas>
+      </div>
+      <div class="phase-panel fade-in">
+        <div class="phase-btn active" onclick="setPhase(0,this)">
+          <div class="phase-number">1</div>
+          <div class="phase-icon">🔽</div>
+          <div class="phase-info">
+            <div class="phase-name">Admissão</div>
+            <div class="phase-desc">A câmara se expande enquanto o rotor gira, criando vácuo que aspira a mistura ar-combustível pela porta de admissão.</div>
+          </div>
+        </div>
+        <div class="phase-btn" onclick="setPhase(1,this)">
+          <div class="phase-number">2</div>
+          <div class="phase-icon">🔼</div>
+          <div class="phase-info">
+            <div class="phase-name">Compressão</div>
+            <div class="phase-desc">A câmara diminui de volume, comprimindo a mistura contra a carcaça até atingir a pressão ideal para ignição.</div>
+          </div>
+        </div>
+        <div class="phase-btn" onclick="setPhase(2,this)">
+          <div class="phase-number">3</div>
+          <div class="phase-icon">💥</div>
+          <div class="phase-info">
+            <div class="phase-name">Combustão / Potência</div>
+            <div class="phase-desc">As velas disparam, inflamando a mistura comprimida. A expansão dos gases empurra o rotor, gerando torque e potência.</div>
+          </div>
+        </div>
+        <div class="phase-btn" onclick="setPhase(3,this)">
+          <div class="phase-number">4</div>
+          <div class="phase-icon">💨</div>
+          <div class="phase-info">
+            <div class="phase-name">Exaustão / Escape</div>
+            <div class="phase-desc">Os gases queimados são expelidos pela porta de escape enquanto a câmara diminui, completando o ciclo de 4 tempos.</div>
+          </div>
+        </div>
+        <div style="margin-top:.3rem;padding:1rem;border-radius:10px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.08)">
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem">⚡ Dado da Fase</div>
+          <div id="phaseFact" style="font-size:.78rem;color:var(--text-dim);line-height:1.5">A admissão ocorre simultaneamente com compressão e exaustão nas outras câmaras, tornando o ciclo contínuo e extremamente suave.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Análise Técnica</div>
+      <h2 class="section-title">Wankel <em>vs</em> Motor a Pistão</h2>
+      <p style="color:var(--text-dim);font-size:.9rem;max-width:640px;margin-bottom:2.5rem">Comparação direta entre o motor rotativo Wankel e o motor alternativo de pistão convencional em aspectos mecânicos, desempenho e aplicabilidade prática.</p>
+    </div>
+    <div class="fade-in comp-table-wrap">
+      <div class="comp-head-row">
+        <div class="comp-head-cell lbl">Critério</div>
+        <div class="comp-head-cell wankel">⚙ Motor Wankel · Rotativo</div>
+        <div class="comp-head-cell piston">🔩 Motor a Pistão · Alternativo</div>
+      </div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Partes Móveis</div><div class="comp-cell-val good">✅ Apenas 3 principais</div><div class="comp-cell-val bad">❌ 40 – 100+ componentes</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Peso Total</div><div class="comp-cell-val good">✅ Até 40% mais leve</div><div class="comp-cell-val ok">— Referência de mercado</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Vibração</div><div class="comp-cell-val good">✅ Quase imperceptível</div><div class="comp-cell-val bad">❌ Vibração inerente ao ciclo</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Potência / Peso</div><div class="comp-cell-val good">✅ Excelente — referência motorsport</div><div class="comp-cell-val ok">— Bom em geral</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Torque a Baixa RPM</div><div class="comp-cell-val bad">❌ Fraco abaixo de 3.000 rpm</div><div class="comp-cell-val good">✅ Forte desde baixa rotação</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Alta Rotação</div><div class="comp-cell-val good">✅ Até 10.000+ rpm suave</div><div class="comp-cell-val ok">— Limitado pela inércia</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Consumo de Combustível</div><div class="comp-cell-val bad">❌ 30–40% maior</div><div class="comp-cell-val good">✅ Mais eficiente</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Emissões (HC)</div><div class="comp-cell-val bad">❌ Altas — combustão incompleta</div><div class="comp-cell-val good">✅ Mais baixas</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Consumo de Óleo</div><div class="comp-cell-val bad">❌ Alto — lubrificação direta</div><div class="comp-cell-val good">✅ Normal</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Manutenção</div><div class="comp-cell-val bad">❌ Vedações apicais críticas</div><div class="comp-cell-val good">✅ Ampla rede, peças acessíveis</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Compacidade</div><div class="comp-cell-val good">✅ Muito compacto e baixo</div><div class="comp-cell-val bad">❌ Maior volume, mais alto</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Durabilidade</div><div class="comp-cell-val bad">❌ Menor vida útil</div><div class="comp-cell-val good">✅ Longa vida com manutenção</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Adoção / Suporte</div><div class="comp-cell-val bad">❌ Restrita (Mazda, UAVs, drones)</div><div class="comp-cell-val good">✅ Universal em todas indústrias</div></div>
+      <div class="comp-data-row"><div class="comp-cell-lbl">Normas de Emissão</div><div class="comp-cell-val bad">❌ Difícil adequação (Euro 6+)</div><div class="comp-cell-val good">✅ Atende normas modernas</div></div>
+    </div>
+
+    <!-- bar charts -->
+    <div class="fade-in bar-grid">
+      <div class="bar-card">
+        <div class="bar-card-title">Vantagens do Wankel</div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Potência / Peso</span><span class="bl">Wankel 92%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="92"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="70"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bo">Pistão 70%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Suavidade de Operação</span><span class="bl">Wankel 97%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="97"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="62"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bo">Pistão 62%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Desempenho em Alta RPM</span><span class="bl">Wankel 95%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="95"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="58"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bo">Pistão 58%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Compacidade</span><span class="bl">Wankel 93%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="93"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="50"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bo">Pistão 50%</span></div>
+        </div>
+      </div>
+      <div class="bar-card">
+        <div class="bar-card-title">Vantagens do Motor a Pistão</div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Eficiência de Combustível</span><span class="bo">Pistão 88%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="88"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="57"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bl">Wankel 57%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Torque a Baixa RPM</span><span class="bo">Pistão 90%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="90"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="38"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bl">Wankel 38%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Durabilidade</span><span class="bo">Pistão 90%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="90"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="52"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bl">Wankel 52%</span></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-labels"><span>Emissões Baixas</span><span class="bo">Pistão 85%</span></div>
+          <div class="bar-track"><div class="bar-fill bf-orange" data-w="85"></div></div>
+          <div class="bar-track"><div class="bar-fill bf-blue" data-w="40"></div></div>
+          <div class="bar-labels" style="margin-top:2px"><span></span><span class="bl">Wankel 40%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">História</div>
+      <h2 class="section-title">Linha do <em>Tempo</em></h2>
+    </div>
+    <div class="timeline-wrap">
+      <div class="timeline-line"></div>
+      <div class="timeline-events">
+        <div class="tl-item"><div class="tl-content"><div class="tl-year">1954</div><div class="tl-title">Patente Registrada</div><div class="tl-text">Felix Wankel registra a patente do motor rotativo junto à NSU Motorenwerke AG na Alemanha.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
+        <div class="tl-item"><div class="tl-empty"></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-year">1957</div><div class="tl-title">Primeiro Teste Operacional</div><div class="tl-text">O protótipo DKM 54 é testado com sucesso, atingindo 17.000 rpm. Resultado surpreende toda a equipe.</div></div></div>
+        <div class="tl-item"><div class="tl-content"><div class="tl-year">1964</div><div class="tl-title">NSU Spider</div><div class="tl-text">Primeiro automóvel com motor Wankel vendido comercialmente. Motor monorotor de 500cc.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
+        <div class="tl-item"><div class="tl-empty"></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-year">1967</div><div class="tl-title">Mazda Cosmo Sport</div><div class="tl-text">A Mazda lança o icônico Cosmo Sport, iniciando uma parceria histórica com o motor rotativo.</div></div></div>
+        <div class="tl-item"><div class="tl-content"><div class="tl-year">1978</div><div class="tl-title">Mazda RX-7 1ª Geração</div><div class="tl-text">Lançamento do lendário RX-7 com motor 12A birotativo, um dos esportivos mais icônicos.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
+        <div class="tl-item"><div class="tl-empty"></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-year">1991</div><div class="tl-title">Mazda 787B — Le Mans</div><div class="tl-text">Motor rotativo 4-rotor R26B vence as 24 Horas de Le Mans. Única vitória japonesa na história da prova.</div></div></div>
+        <div class="tl-item"><div class="tl-content"><div class="tl-year">2002</div><div class="tl-title">Mazda RX-8</div><div class="tl-text">Lançamento do RX-8 com motor RENESIS. Último carro de série com motor Wankel por mais de uma década.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
+        <div class="tl-item"><div class="tl-empty"></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-year">2012</div><div class="tl-title">Fim da Produção RX-8</div><div class="tl-text">Mazda encerra a produção por pressões ambientais e normas de emissões crescentes.</div></div></div>
+        <div class="tl-item"><div class="tl-content"><div class="tl-year">2023</div><div class="tl-title">Mazda MX-30 R-EV</div><div class="tl-text">Motor Wankel retorna como gerador de alcance no MX-30 híbrido plug-in, inaugurando nova era para a tecnologia.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cars">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Automóveis</div>
+      <h2 class="section-title">Carros que <em>Utilizaram</em></h2>
+      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem">Os modelos mais icônicos equipados com o motor Wankel ao longo da história</p>
+    </div>
+    <div class="cars-grid fade-in">
+      <div class="car-card"><div class="car-img"><img src="midia/r80.png" alt="NSU Ro 80"></div><div class="car-body"><div class="car-brand">NSU</div><div class="car-name">Ro 80</div><div class="car-years">1967 — 1977</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">KKM 612</div></div><div class="cs"><div class="cs-label">Rotores</div><div class="cs-value">2×</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">1.0 L</div></div><div class="cs"><div class="cs-label">Potência</div><div class="cs-value">115 cv</div></div></div></div></div>
+      <div class="car-card"><div class="car-img"><img src="midia/cosmo.png" alt="Mazda Cosmo Sport"></div><div class="car-body"><div class="car-brand">Mazda</div><div class="car-name">Cosmo Sport L10B</div><div class="car-years">1967 — 1972</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">10A</div></div><div class="cs"><div class="cs-label">Rotores</div><div class="cs-value">2×</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">0.98 L</div></div><div class="cs"><div class="cs-label">Potência</div><div class="cs-value">110 cv</div></div></div></div></div>
+      <div class="car-card"><div class="car-img"><img src="midia/rx.png" alt="Mazda RX-7 FD"></div><div class="car-body"><div class="car-brand">Mazda</div><div class="car-name">RX-7 FD</div><div class="car-years">1992 — 2002</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">13B-REW</div></div><div class="cs"><div class="cs-label">Rotores</div><div class="cs-value">2× Twin Turbo</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">1.3 L</div></div><div class="cs"><div class="cs-label">Potência</div><div class="cs-value">255–280 cv</div></div></div></div></div>
+      <div class="car-card"><div class="car-img"><img src="midia/rx8.png" alt="Mazda RX-8"></div><div class="car-body"><div class="car-brand">Mazda</div><div class="car-name">RX-8</div><div class="car-years">2002 — 2012</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">13B-MSP RENESIS</div></div><div class="cs"><div class="cs-label">Rotores</div><div class="cs-value">2×</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">1.3 L</div></div><div class="cs"><div class="cs-label">Potência</div><div class="cs-value">232–238 cv</div></div></div></div></div>
+      <div class="car-card"><div class="car-img"><img src="midia/787.png" alt="Mazda 787B Le Mans"></div><div class="car-body"><div class="car-brand">Mazda</div><div class="car-name">787B (Le Mans)</div><div class="car-years">1991</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">R26B</div></div><div class="cs"><div class="cs-label">Rotores</div><div class="cs-value">4×</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">2.6 L</div></div><div class="cs"><div class="cs-label">Potência</div><div class="cs-value">700+ cv</div></div></div></div></div>
+      <div class="car-card"><div class="car-img"><img src="midia/mx.png" alt="Mazda MX-30 R-EV"></div><div class="car-body"><div class="car-brand">Mazda</div><div class="car-name">MX-30 R-EV</div><div class="car-years">2023 — Atual</div><div class="car-specs"><div class="cs"><div class="cs-label">Motor</div><div class="cs-value">8C (Gerador)</div></div><div class="cs"><div class="cs-label">Tipo</div><div class="cs-value">Plug-in Híbrido</div></div><div class="cs"><div class="cs-label">Cilindrada</div><div class="cs-value">0.83 L</div></div><div class="cs"><div class="cs-label">Autonomia</div><div class="cs-value">+680 km</div></div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="problems">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Limitações &amp; Desafios</div>
+      <h2 class="section-title">Problemas <em>Crônicos</em></h2>
+      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem;max-width:600px">Apesar de suas vantagens únicas, o motor Wankel enfrenta desafios técnicos que limitaram sua adoção massiva.</p>
+    </div>
+    <div class="problems-grid fade-in">
+      <div class="prob-card"><div class="prob-num">01</div><div class="prob-icon">🔥</div><div class="prob-title">Alto Consumo de Combustível</div><div class="prob-text">A câmara de combustão alongada dificulta a queima completa do combustível, resultando em consumo até 30–40% maior que motores de pistão equivalentes.</div></div>
+      <div class="prob-card"><div class="prob-num">02</div><div class="prob-icon">💨</div><div class="prob-title">Emissões Elevadas de HC</div><div class="prob-text">A combustão incompleta gera altos índices de hidrocarbonetos não queimados, dificultando o atendimento às normas antiemissão modernas como Euro 6.</div></div>
+      <div class="prob-card"><div class="prob-num">03</div><div class="prob-icon">🔧</div><div class="prob-title">Desgaste das Vedações Apicais</div><div class="prob-text">Os apex seals sofrem desgaste prematuro pelo contato constante com a carcaça. É a falha mais comum e principal ponto de manutenção crítica.</div></div>
+      <div class="prob-card"><div class="prob-num">04</div><div class="prob-icon">🌡</div><div class="prob-title">Gestão Térmica Complexa</div><div class="prob-text">A câmara de combustão sempre no mesmo lado da carcaça cria gradientes térmicos severos, exigindo sistemas de arrefecimento sofisticados.</div></div>
+      <div class="prob-card"><div class="prob-num">05</div><div class="prob-icon">💧</div><div class="prob-title">Consumo de Óleo Elevado</div><div class="prob-text">O sistema de lubrificação injeta óleo diretamente na câmara de combustão, resultando em consumo significativamente maior que motores convencionais.</div></div>
+      <div class="prob-card"><div class="prob-num">06</div><div class="prob-icon">📉</div><div class="prob-title">Baixo Torque em Baixas Rotações</div><div class="prob-text">O motor Wankel apresenta torque reduzido abaixo de 3.000 rpm, sendo inadequado para uso urbano intenso ou aplicações que demandam tração imediata.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Equipe</div>
+      <h2 class="section-title">Nossa <em>Equipe</em></h2>
+      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem">Trabalho desenvolvido para a disciplina de Engenharia — FACENS 2025</p>
+    </div>
+    <div class="team-grid fade-in">
+      <div class="team-card"><div class="team-avatar">AS</div><div class="team-name">Augusto Sena</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/augusto-sena" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+      <div class="team-card"><div class="team-avatar">RF</div><div class="team-name">Rafael Freitas</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/rafael-freitas" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+      <div class="team-card"><div class="team-avatar">LX</div><div class="team-name">Lucas Ximenes</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/lucas-ximenes" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+      <div class="team-card"><div class="team-avatar">SA</div><div class="team-name">Samuel Antonio</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/samuel-antonio" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+      <div class="team-card"><div class="team-avatar">KC</div><div class="team-name">Kaua Carraro</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/kaua-carraro" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  
+  <div class="footer-text">Trabalho Acadêmico — FACENS · Engenharia Mecânica · 2025</div>
+  
+</footer>
+
+<script>
+// SCROLL PROGRESS
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('scrollBar').style.width = p + '%';
+});
+
+// NAV MOBILE
+function toggleMenu(){ document.getElementById('navLinks').classList.toggle('open'); }
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.remove('open');
+}));
+
+// INTERSECTION OBSERVER - fade-in + timeline
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in, .tl-item').forEach(el => io.observe(el));
+
+// BARS ANIMATION
+const barIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.bar-fill[data-w]').forEach(b => {
+        const w = b.getAttribute('data-w');
+        setTimeout(() => { b.style.width = w + '%'; }, 250);
+      });
+      barIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.bar-card').forEach(el => barIO.observe(el));
+
+// LED pulse
+const leds = document.querySelectorAll('.led.on');
+let li = 0;
+setInterval(() => {
+  leds.forEach(l => l.style.animation = '');
+  if(leds[li % leds.length]) leds[li % leds.length].style.animation = 'ledBlink 0.4s ease';
+  li++;
+}, 600);
+
+// PHASE
+const phaseFacts = [
+  'A admissão ocorre simultaneamente com compressão e exaustão nas outras câmaras — o ciclo é contínuo e extremamente suave.',
+  'A taxa de compressão é tipicamente 8.5:1–9.5:1. A câmara diminui progressivamente enquanto o rotor avança em direção ao ponto mais estreito da carcaça.',
+  'A expansão dos gases move o rotor excêntrico transmitindo força ao eixo de saída. Cada face do rotor gera um pulso de potência por rotação.',
+  'Os gases são expelidos pela abertura de escape na carcaça sem válvulas mecânicas — o processo é inteiramente passivo e silencioso.'
+];
+let currentPhase = 0;
+
+function setPhase(idx, btn) {
+  document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPhase = idx;
+  document.getElementById('phaseFact').textContent = phaseFacts[idx];
+}
+
+// ════════════════════════════════════════════
+// WANKEL ENGINE CYCLE CANVAS
+// ════════════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('wankelCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let cycleAnimAngle = 0;
+  const phaseColors = ['rgba(79,195,247,0.35)', 'rgba(255,165,50,0.3)', 'rgba(220,50,50,0.35)', 'rgba(120,220,120,0.25)'];
+
+  function drawCycle(angle) {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    const cx = w/2, cy = h/2;
+    const R = w * 0.33, r = R/3, e = R/6;
+
+    // Housing
+    ctx.beginPath();
+    const steps = 300;
+    for (let i = 0; i <= steps; i++) {
+      const t = (i/steps) * Math.PI * 2;
+      const x = cx + (R+r)*Math.cos(t) - e*Math.cos((R/r+1)*t);
+      const y = cy + (R+r)*Math.sin(t) - e*Math.sin((R/r+1)*t);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(8,16,32,0.92)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(79,195,247,0.55)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Rotor vertices
+    const pts = [];
+    for (let i = 0; i < 3; i++) {
+      const ta = angle/3 + (i * 2*Math.PI/3);
+      const t2 = ta*3;
+      pts.push({
+        x: cx + ((R+r)*Math.cos(ta) - e*Math.cos(t2)) * 0.7,
+        y: cy + ((R+r)*Math.sin(ta) - e*Math.sin(t2)) * 0.7
+      });
+    }
+
+    // Colored chambers
+    for (let i = 0; i < 3; i++) {
+      const p1 = pts[i], p2 = pts[(i+1)%3];
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      
+      const startT = angle/3 + (i * 2*Math.PI/3);
+      const endT = angle/3 + ((i+1) * 2*Math.PI/3);
+      const segSteps = 50;
+      for (let j = 0; j <= segSteps; j++) {
+        const t = startT + (endT - startT) * j/segSteps;
+        const t2 = t*3;
+        const ex = cx + ((R+r)*Math.cos(t) - e*Math.cos(t2)) * 0.7;
+        const ey = cy + ((R+r)*Math.sin(t) - e*Math.sin(t2)) * 0.7;
+        ctx.lineTo(ex, ey);
+      }
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.closePath();
+      const colorIdx = (currentPhase + i) % 4;
+      ctx.fillStyle = phaseColors[colorIdx];
+      ctx.fill();
+    }
+
+    // Rotor body
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    ctx.lineTo(pts[1].x, pts[1].y);
+    ctx.lineTo(pts[2].x, pts[2].y);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(18,45,80,0.97)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(79,195,247,0.55)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Apex seals
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(79,195,247,0.85)';
+      ctx.fill();
+    });
+
+    // Center
+    ctx.beginPath();
+    ctx.arc(cx, cy, 7, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(79,195,247,0.9)';
+    ctx.fill();
+  }
+
+  function cycleLoop() {
+    cycleAnimAngle += 0.015;
+    drawCycle(cycleAnimAngle);
+    requestAnimationFrame(cycleLoop);
+  }
+
+  cycleLoop();
+})();
+
+</script>
+</body>
+</html>
