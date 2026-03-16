@@ -175,13 +175,42 @@ section{position:relative;z-index:1;padding:6rem 0}
 .cs-value{font-size:.82rem;font-weight:700;color:var(--text);margin-top:.1rem}
 /* PROBLEMS */
 #problems{background:var(--bg3)}
-.problems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2rem}
-.prob-card{padding:1.5rem;border-radius:14px;border:1px solid rgba(255,80,80,.12);background:rgba(40,10,10,.4);position:relative;overflow:hidden;transition:all .35s}
-.prob-card:hover{border-color:rgba(255,80,80,.3);box-shadow:0 0 25px rgba(255,80,80,.08)}
-.prob-num{font-size:2.5rem;font-weight:900;color:rgba(255,80,80,.12);position:absolute;top:.8rem;right:1rem;line-height:1;letter-spacing:-.05em}
-.prob-icon{font-size:1.5rem;margin-bottom:.8rem}
-.prob-title{font-size:.9rem;font-weight:700;color:#ff8080;margin-bottom:.5rem}
-.prob-text{font-size:.8rem;color:var(--text-dim);line-height:1.6}
+.prob-main{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start;margin-top:2rem}
+.prob-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.prob-nav-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;border:1px solid rgba(255,80,80,.2);background:rgba(40,10,10,.5);color:var(--text-dim);font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.prob-nav-btn:hover{border-color:rgba(255,80,80,.45);color:#ff9090}
+.prob-nav-btn.active{background:rgba(255,60,60,.15);border-color:rgba(255,80,80,.6);color:#ff8080;box-shadow:0 0 16px rgba(255,60,60,.12)}
+.prob-nav-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,80,80,.4);flex-shrink:0}
+.prob-nav-btn.active .prob-nav-dot{background:#ff5050;box-shadow:0 0 6px rgba(255,80,80,.7)}
+.prob-detail-panel{background:rgba(40,10,10,.5);border:1px solid rgba(255,80,80,.2);border-radius:16px;padding:1.8rem;min-height:360px;position:relative;overflow:hidden;transition:border-color .3s}
+.prob-detail-panel::before{content:attr(data-num);position:absolute;top:.6rem;right:1rem;font-size:3.5rem;font-weight:900;color:rgba(255,80,80,.08);line-height:1;letter-spacing:-.05em;pointer-events:none}
+.prob-detail-panel.active-panel{border-color:rgba(255,80,80,.45);box-shadow:0 0 30px rgba(255,60,60,.1)}
+.prob-sev-bar{height:3px;background:rgba(255,80,80,.1);border-radius:2px;margin-bottom:1.4rem;overflow:hidden}
+.prob-sev-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#7a1010,#ff5050);width:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.prob-det-icon{font-size:2rem;margin-bottom:.8rem;display:block;line-height:1}
+.prob-det-title{font-size:1rem;font-weight:800;color:#ff8080;margin-bottom:.7rem;letter-spacing:-.01em}
+.prob-det-text{font-size:.82rem;color:var(--text-dim);line-height:1.65;margin-bottom:1rem}
+.prob-meter-wrap{margin-top:1rem}
+.prob-meter-label{display:flex;justify-content:space-between;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem}
+.prob-meter-label span:last-child{color:#ff8080}
+.prob-meter-track{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:.5rem}
+.prob-meter-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#6a0f0f,#ff4040);width:0;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.prob-impact-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+.prob-tag{padding:3px 10px;border-radius:100px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,80,80,.25);color:#ff9090;background:rgba(255,60,60,.08)}
+.prob-list-col{display:flex;flex-direction:column;gap:.65rem}
+.prob-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:12px;border:1px solid rgba(255,80,80,.1);background:rgba(40,10,10,.4);cursor:pointer;transition:all .22s}
+.prob-item:hover{border-color:rgba(255,80,80,.3)}
+.prob-item.selected{border-color:rgba(255,80,80,.55);background:rgba(60,10,10,.6);box-shadow:0 0 18px rgba(255,50,50,.1)}
+.prob-item-num{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,80,80,.25);background:rgba(255,60,60,.06);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#ff8080;flex-shrink:0;transition:all .22s}
+.prob-item.selected .prob-item-num{background:rgba(255,60,60,.2);border-color:rgba(255,80,80,.6);box-shadow:0 0 8px rgba(255,60,60,.3)}
+.prob-item-icon{font-size:1.1rem;flex-shrink:0;line-height:1}
+.prob-item-info{flex:1;min-width:0}
+.prob-item-title{font-size:.78rem;font-weight:700;color:#ff9090;margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prob-item.selected .prob-item-title{color:#ff6060}
+.prob-item-mini{height:3px;background:rgba(255,80,80,.08);border-radius:2px;overflow:hidden;margin-top:.35rem}
+.prob-item-mini-fill{height:100%;background:linear-gradient(90deg,#7a1010,#ff4040);border-radius:2px}
+.prob-item-arrow{font-size:.7rem;color:rgba(255,80,80,.3);transition:all .22s;flex-shrink:0}
+.prob-item.selected .prob-item-arrow,.prob-item:hover .prob-item-arrow{color:#ff6060}
 /* TEAM */
 #team{background:var(--bg2)}
 .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;margin-top:2rem}
@@ -204,7 +233,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
 .fade-in.visible{opacity:1;transform:translateY(0)}
 .scroll-indicator{position:fixed;top:0;left:0;height:3px;z-index:2000;background:linear-gradient(90deg,var(--blue-deep),var(--blue-bright));box-shadow:0 0 8px var(--blue);transition:width .1s;width:0}
 @media(max-width:900px){
-  .about-grid,.engine-interactive,.comp-head-row,.comp-data-row,.bar-grid{grid-template-columns:1fr}
+  .about-grid,.engine-interactive,.comp-head-row,.comp-data-row,.bar-grid,.prob-main{grid-template-columns:1fr}
   .comp-head-row,.comp-data-row{grid-template-columns:140px 1fr 1fr}
   .timeline-line{left:24px}
   .tl-item{grid-template-columns:48px 1fr}
@@ -252,7 +281,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
 <section id="hero">
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-badge"><span class="hero-badge-dot"></span>Engenharia Mecânica · FACENS 2025</div>
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Engenharia Mecânica · FACENS 2026</div>
     <h1 class="hero-title">
       <span class="line1">Motor</span>
       <span class="line2">Wankel</span>
@@ -497,16 +526,10 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
     <div class="fade-in">
       <div class="section-label">Limitações &amp; Desafios</div>
       <h2 class="section-title">Problemas <em>Crônicos</em></h2>
-      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem;max-width:600px">Apesar de suas vantagens únicas, o motor Wankel enfrenta desafios técnicos que limitaram sua adoção massiva.</p>
+      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem;max-width:600px">Selecione cada problema para explorar os detalhes, métricas de impacto e tags técnicas.</p>
     </div>
-    <div class="problems-grid fade-in">
-      <div class="prob-card"><div class="prob-num">01</div><div class="prob-icon">🔥</div><div class="prob-title">Alto Consumo de Combustível</div><div class="prob-text">A câmara de combustão alongada dificulta a queima completa do combustível, resultando em consumo até 30–40% maior que motores de pistão equivalentes.</div></div>
-      <div class="prob-card"><div class="prob-num">02</div><div class="prob-icon">💨</div><div class="prob-title">Emissões Elevadas de HC</div><div class="prob-text">A combustão incompleta gera altos índices de hidrocarbonetos não queimados, dificultando o atendimento às normas antiemissão modernas como Euro 6.</div></div>
-      <div class="prob-card"><div class="prob-num">03</div><div class="prob-icon">🔧</div><div class="prob-title">Desgaste das Vedações Apicais</div><div class="prob-text">Os apex seals sofrem desgaste prematuro pelo contato constante com a carcaça. É a falha mais comum e principal ponto de manutenção crítica.</div></div>
-      <div class="prob-card"><div class="prob-num">04</div><div class="prob-icon">🌡</div><div class="prob-title">Gestão Térmica Complexa</div><div class="prob-text">A câmara de combustão sempre no mesmo lado da carcaça cria gradientes térmicos severos, exigindo sistemas de arrefecimento sofisticados.</div></div>
-      <div class="prob-card"><div class="prob-num">05</div><div class="prob-icon">💧</div><div class="prob-title">Consumo de Óleo Elevado</div><div class="prob-text">O sistema de lubrificação injeta óleo diretamente na câmara de combustão, resultando em consumo significativamente maior que motores convencionais.</div></div>
-      <div class="prob-card"><div class="prob-num">06</div><div class="prob-icon">📉</div><div class="prob-title">Baixo Torque em Baixas Rotações</div><div class="prob-text">O motor Wankel apresenta torque reduzido abaixo de 3.000 rpm, sendo inadequado para uso urbano intenso ou aplicações que demandam tração imediata.</div></div>
-    </div>
+    <div class="prob-nav" id="probNav"></div>
+    <div class="prob-main" id="probMain"></div>
   </div>
 </section>
 
@@ -515,7 +538,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
     <div class="fade-in">
       <div class="section-label">Equipe</div>
       <h2 class="section-title">Nossa <em>Equipe</em></h2>
-      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem">Trabalho desenvolvido para a disciplina de Engenharia — FACENS 2025</p>
+      <p style="color:var(--text-dim);font-size:.88rem;margin-bottom:2rem">Trabalho desenvolvido para a disciplina de Engenharia — FACENS 2026</p>
     </div>
     <div class="team-grid fade-in">
       <div class="team-card"><div class="team-avatar">AS</div><div class="team-name">Augusto Sena</div><div class="team-role">Eng. Mecanica</div><a href="https://www.linkedin.com/in/augusto-sena" target="_blank" class="team-linkedin"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
@@ -529,7 +552,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
 
 <footer>
   
-  <div class="footer-text">Trabalho Acadêmico — FACENS · Engenharia Mecânica · 2025</div>
+  <div class="footer-text">Trabalho Acadêmico — FACENS · Engenharia Mecânica · 2026</div>
   
 </footer>
 
@@ -746,6 +769,109 @@ function setPhase(idx, btn) {
 
   window.addEventListener('scroll', updateTimelineProgress, { passive: true });
   updateTimelineProgress();
+})();
+
+// PROBLEMAS CRÔNICOS - INTERACTIVE PANEL
+(function(){
+  const probs = [
+    {num:'01',icon:'🔥',title:'Alto Consumo de Combustível',
+     text:'A câmara de combustão alongada dificulta a queima completa do combustível, resultando em consumo até 30–40% maior que motores de pistão equivalentes. Esse fator foi decisivo para o abandono do motor em aplicações de uso cotidiano.',
+     severity:85,m1:88,m2:80,m3:55,ml1:'Crítico',ml2:'Alto',ml3:'Moderado',
+     tags:['Eficiência','Custo Operacional','Emissão CO₂']},
+    {num:'02',icon:'💨',title:'Emissões Elevadas de HC',
+     text:'A combustão incompleta gera altos índices de hidrocarbonetos não queimados, dificultando o atendimento às normas antiemissão modernas como Euro 6. Esse foi o principal fator que levou ao encerramento do RX-8 em 2012.',
+     severity:90,m1:95,m2:85,m3:40,ml1:'Crítico',ml2:'Muito Alto',ml3:'Baixo',
+     tags:['Euro 6','Legislação','Hidrocarbonetos']},
+    {num:'03',icon:'🔧',title:'Desgaste das Vedações Apicais',
+     text:'Os apex seals sofrem desgaste prematuro pelo contato constante com a carcaça. É a falha mais comum e principal ponto de manutenção crítica. O superaquecimento ou falta de óleo pode provocar falha catastrófica do motor.',
+     severity:88,m1:90,m2:70,m3:95,ml1:'Crítico',ml2:'Alto',ml3:'Muito Alto',
+     tags:['Apex Seals','Desgaste','Falha Catastrófica']},
+    {num:'04',icon:'🌡',title:'Gestão Térmica Complexa',
+     text:'A câmara de combustão sempre no mesmo lado da carcaça cria gradientes térmicos severos, exigindo sistemas de arrefecimento sofisticados. Isso aumenta o custo e a complexidade do projeto e da manutenção.',
+     severity:72,m1:75,m2:60,m3:78,ml1:'Elevado',ml2:'Médio',ml3:'Alto',
+     tags:['Temperatura','Arrefecimento','Projeto']},
+    {num:'05',icon:'💧',title:'Consumo de Óleo Elevado',
+     text:'O sistema de lubrificação injeta óleo diretamente na câmara de combustão, resultando em consumo significativamente maior. Proprietários precisam monitorar frequentemente o nível para evitar danos severos ao motor.',
+     severity:78,m1:80,m2:65,m3:72,ml1:'Alto',ml2:'Médio',ml3:'Alto',
+     tags:['Lubrificação','Manutenção','Custo']},
+    {num:'06',icon:'📉',title:'Baixo Torque em Baixas Rotações',
+     text:'O motor Wankel apresenta torque reduzido abaixo de 3.000 rpm, sendo inadequado para uso urbano intenso ou aplicações que demandam tração imediata. A potência surge de forma progressiva, ideal para pistas mas limitante no dia a dia.',
+     severity:65,m1:68,m2:72,m3:35,ml1:'Moderado',ml2:'Alto',ml3:'Baixo',
+     tags:['Torque','RPM','Uso Urbano']}
+  ];
+
+  function buildUI() {
+    const nav = document.getElementById('probNav');
+    const main = document.getElementById('probMain');
+
+    main.innerHTML = `
+      <div id="probDetPanel" class="prob-detail-panel active-panel" data-num="01">
+        <div class="prob-sev-bar"><div class="prob-sev-fill" id="pSev"></div></div>
+        <span class="prob-det-icon" id="pIcon"></span>
+        <div class="prob-det-title" id="pTitle"></div>
+        <div class="prob-det-text" id="pText"></div>
+        <div class="prob-meter-wrap">
+          <div class="prob-meter-label"><span>Impacto Técnico</span><span id="pMl1"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM1"></div></div>
+          <div class="prob-meter-label"><span>Adoção no Mercado</span><span id="pMl2"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM2"></div></div>
+          <div class="prob-meter-label"><span>Custo de Manutenção</span><span id="pMl3"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM3"></div></div>
+        </div>
+        <div class="prob-impact-row" id="pTags"></div>
+      </div>
+      <div id="probListCol" class="prob-list-col"></div>`;
+
+    probs.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'prob-nav-btn' + (i === 0 ? ' active' : '');
+      btn.innerHTML = `<span class="prob-nav-dot"></span>${p.num}`;
+      btn.addEventListener('click', () => renderDetail(i));
+      nav.appendChild(btn);
+    });
+
+    const lst = document.getElementById('probListCol');
+    probs.forEach((p, i) => {
+      const item = document.createElement('div');
+      item.className = 'prob-item' + (i === 0 ? ' selected' : '');
+      item.innerHTML = `
+        <div class="prob-item-num">${p.num}</div>
+        <span class="prob-item-icon">${p.icon}</span>
+        <div class="prob-item-info">
+          <div class="prob-item-title">${p.title}</div>
+          <div class="prob-item-mini"><div class="prob-item-mini-fill" style="width:${p.severity}%"></div></div>
+        </div>
+        <span class="prob-item-arrow">▶</span>`;
+      item.addEventListener('click', () => renderDetail(i));
+      lst.appendChild(item);
+    });
+  }
+
+  function renderDetail(idx) {
+    const p = probs[idx];
+    document.getElementById('probDetPanel').dataset.num = p.num;
+    document.getElementById('pIcon').textContent  = p.icon;
+    document.getElementById('pTitle').textContent = p.title;
+    document.getElementById('pText').textContent  = p.text;
+    document.getElementById('pMl1').textContent   = p.ml1;
+    document.getElementById('pMl2').textContent   = p.ml2;
+    document.getElementById('pMl3').textContent   = p.ml3;
+    document.getElementById('pTags').innerHTML    = p.tags.map(t => `<span class="prob-tag">${t}</span>`).join('');
+
+    ['pSev','pM1','pM2','pM3'].forEach(id => document.getElementById(id).style.width = '0');
+    setTimeout(() => {
+      document.getElementById('pSev').style.width = p.severity + '%';
+      document.getElementById('pM1').style.width  = p.m1 + '%';
+      document.getElementById('pM2').style.width  = p.m2 + '%';
+      document.getElementById('pM3').style.width  = p.m3 + '%';
+    }, 60);
+
+    document.querySelectorAll('.prob-item').forEach((el, i)     => el.classList.toggle('selected', i === idx));
+    document.querySelectorAll('.prob-nav-btn').forEach((el, i)  => el.classList.toggle('active',   i === idx));
+  }
+
+  buildUI();
+  renderDetail(0);
 })();
 
 </script>

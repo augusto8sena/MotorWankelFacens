@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problemas Crônicos — Motor Wankel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#4FC3F7;--blue-deep:#0288D1;
+  --bg:#060a10;--bg3:#0d1520;
+  --text:#e8f4fb;--text-dim:#7da8c4;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--bg3);color:var(--text);line-height:1.7;padding:4rem 2rem}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.4}
+.container{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.section-label{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem}
+.section-label::before{content:'';width:28px;height:1px;background:var(--blue)}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:.5rem;letter-spacing:-.01em}
+.section-title em{color:var(--blue);font-style:normal}
+.section-sub{color:var(--text-dim);font-size:.88rem;margin-bottom:2rem;max-width:600px}
+
+/* NAV PILLS */
+.prob-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.prob-nav-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;border:1px solid rgba(255,80,80,.2);background:rgba(40,10,10,.5);color:var(--text-dim);font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.prob-nav-btn:hover{border-color:rgba(255,80,80,.45);color:#ff9090}
+.prob-nav-btn.active{background:rgba(255,60,60,.15);border-color:rgba(255,80,80,.6);color:#ff8080;box-shadow:0 0 16px rgba(255,60,60,.12)}
+.prob-nav-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,80,80,.4);flex-shrink:0}
+.prob-nav-btn.active .prob-nav-dot{background:#ff5050;box-shadow:0 0 6px rgba(255,80,80,.7)}
+
+/* MAIN GRID */
+.prob-main{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start}
+
+/* DETAIL PANEL */
+.prob-detail-panel{background:rgba(40,10,10,.5);border:1px solid rgba(255,80,80,.2);border-radius:16px;padding:1.8rem;min-height:360px;position:relative;overflow:hidden;transition:border-color .3s}
+.prob-detail-panel::before{content:attr(data-num);position:absolute;top:.6rem;right:1rem;font-size:3.5rem;font-weight:900;color:rgba(255,80,80,.08);line-height:1;letter-spacing:-.05em;pointer-events:none}
+.prob-detail-panel.active-panel{border-color:rgba(255,80,80,.45);box-shadow:0 0 30px rgba(255,60,60,.1)}
+.prob-sev-bar{height:3px;background:rgba(255,80,80,.1);border-radius:2px;margin-bottom:1.4rem;overflow:hidden}
+.prob-sev-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#7a1010,#ff5050);width:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.prob-det-icon{font-size:2rem;margin-bottom:.8rem;display:block;line-height:1}
+.prob-det-title{font-size:1rem;font-weight:800;color:#ff8080;margin-bottom:.7rem;letter-spacing:-.01em}
+.prob-det-text{font-size:.82rem;color:var(--text-dim);line-height:1.65;margin-bottom:1rem}
+.prob-meter-wrap{margin-top:1rem}
+.prob-meter-label{display:flex;justify-content:space-between;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.3rem}
+.prob-meter-label span:last-child{color:#ff8080}
+.prob-meter-track{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:.5rem}
+.prob-meter-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#6a0f0f,#ff4040);width:0;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.prob-impact-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+.prob-tag{padding:3px 10px;border-radius:100px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,80,80,.25);color:#ff9090;background:rgba(255,60,60,.08)}
+
+/* LIST COLUMN */
+.prob-list-col{display:flex;flex-direction:column;gap:.65rem}
+.prob-item{display:flex;align-items:center;gap:.9rem;padding:.9rem 1rem;border-radius:12px;border:1px solid rgba(255,80,80,.1);background:rgba(40,10,10,.4);cursor:pointer;transition:all .22s}
+.prob-item:hover{border-color:rgba(255,80,80,.3)}
+.prob-item.selected{border-color:rgba(255,80,80,.55);background:rgba(60,10,10,.6);box-shadow:0 0 18px rgba(255,50,50,.1)}
+.prob-item-num{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,80,80,.25);background:rgba(255,60,60,.06);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#ff8080;flex-shrink:0;transition:all .22s}
+.prob-item.selected .prob-item-num{background:rgba(255,60,60,.2);border-color:rgba(255,80,80,.6);box-shadow:0 0 8px rgba(255,60,60,.3)}
+.prob-item-icon{font-size:1.1rem;flex-shrink:0;line-height:1}
+.prob-item-info{flex:1;min-width:0}
+.prob-item-title{font-size:.78rem;font-weight:700;color:#ff9090;margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prob-item.selected .prob-item-title{color:#ff6060}
+.prob-item-mini{height:3px;background:rgba(255,80,80,.08);border-radius:2px;overflow:hidden;margin-top:.35rem}
+.prob-item-mini-fill{height:100%;background:linear-gradient(90deg,#7a1010,#ff4040);border-radius:2px}
+.prob-item-arrow{font-size:.7rem;color:rgba(255,80,80,.3);transition:all .22s;flex-shrink:0}
+.prob-item.selected .prob-item-arrow,.prob-item:hover .prob-item-arrow{color:#ff6060}
+
+@media(max-width:700px){
+  body{padding:3rem 1.2rem}
+  .prob-main{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="section-label">Limitações &amp; Desafios</div>
+  <h2 class="section-title">Problemas <em>Crônicos</em></h2>
+  <p class="section-sub">Selecione cada problema para explorar os detalhes, métricas de impacto e tags técnicas.</p>
+
+  <div class="prob-nav" id="probNav"></div>
+  <div class="prob-main" id="probMain"></div>
+</div>
+
+<script>
+(function(){
+  const probs = [
+    {num:'01',icon:'🔥',title:'Alto Consumo de Combustível',
+     text:'A câmara de combustão alongada dificulta a queima completa do combustível, resultando em consumo até 30–40% maior que motores de pistão equivalentes. Esse fator foi decisivo para o abandono do motor em aplicações de uso cotidiano.',
+     severity:85,m1:88,m2:80,m3:55,ml1:'Crítico',ml2:'Alto',ml3:'Moderado',
+     tags:['Eficiência','Custo Operacional','Emissão CO₂']},
+    {num:'02',icon:'💨',title:'Emissões Elevadas de HC',
+     text:'A combustão incompleta gera altos índices de hidrocarbonetos não queimados, dificultando o atendimento às normas antiemissão modernas como Euro 6. Esse foi o principal fator que levou ao encerramento do RX-8 em 2012.',
+     severity:90,m1:95,m2:85,m3:40,ml1:'Crítico',ml2:'Muito Alto',ml3:'Baixo',
+     tags:['Euro 6','Legislação','Hidrocarbonetos']},
+    {num:'03',icon:'🔧',title:'Desgaste das Vedações Apicais',
+     text:'Os apex seals sofrem desgaste prematuro pelo contato constante com a carcaça. É a falha mais comum e principal ponto de manutenção crítica. O superaquecimento ou falta de óleo pode provocar falha catastrófica do motor.',
+     severity:88,m1:90,m2:70,m3:95,ml1:'Crítico',ml2:'Alto',ml3:'Muito Alto',
+     tags:['Apex Seals','Desgaste','Falha Catastrófica']},
+    {num:'04',icon:'🌡',title:'Gestão Térmica Complexa',
+     text:'A câmara de combustão sempre no mesmo lado da carcaça cria gradientes térmicos severos, exigindo sistemas de arrefecimento sofisticados. Isso aumenta o custo e a complexidade do projeto e da manutenção.',
+     severity:72,m1:75,m2:60,m3:78,ml1:'Elevado',ml2:'Médio',ml3:'Alto',
+     tags:['Temperatura','Arrefecimento','Projeto']},
+    {num:'05',icon:'💧',title:'Consumo de Óleo Elevado',
+     text:'O sistema de lubrificação injeta óleo diretamente na câmara de combustão, resultando em consumo significativamente maior. Proprietários precisam monitorar frequentemente o nível para evitar danos severos ao motor.',
+     severity:78,m1:80,m2:65,m3:72,ml1:'Alto',ml2:'Médio',ml3:'Alto',
+     tags:['Lubrificação','Manutenção','Custo']},
+    {num:'06',icon:'📉',title:'Baixo Torque em Baixas Rotações',
+     text:'O motor Wankel apresenta torque reduzido abaixo de 3.000 rpm, sendo inadequado para uso urbano intenso ou aplicações que demandam tração imediata. A potência surge de forma progressiva, ideal para pistas mas limitante no dia a dia.',
+     severity:65,m1:68,m2:72,m3:35,ml1:'Moderado',ml2:'Alto',ml3:'Baixo',
+     tags:['Torque','RPM','Uso Urbano']}
+  ];
+
+  function buildUI() {
+    const nav = document.getElementById('probNav');
+    const main = document.getElementById('probMain');
+
+    main.innerHTML = `
+      <div id="probDetPanel" class="prob-detail-panel active-panel" data-num="01">
+        <div class="prob-sev-bar"><div class="prob-sev-fill" id="pSev"></div></div>
+        <span class="prob-det-icon" id="pIcon"></span>
+        <div class="prob-det-title" id="pTitle"></div>
+        <div class="prob-det-text" id="pText"></div>
+        <div class="prob-meter-wrap">
+          <div class="prob-meter-label"><span>Impacto Técnico</span><span id="pMl1"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM1"></div></div>
+          <div class="prob-meter-label"><span>Adoção no Mercado</span><span id="pMl2"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM2"></div></div>
+          <div class="prob-meter-label"><span>Custo de Manutenção</span><span id="pMl3"></span></div>
+          <div class="prob-meter-track"><div class="prob-meter-fill" id="pM3"></div></div>
+        </div>
+        <div class="prob-impact-row" id="pTags"></div>
+      </div>
+      <div id="probListCol" class="prob-list-col"></div>`;
+
+    probs.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'prob-nav-btn' + (i === 0 ? ' active' : '');
+      btn.innerHTML = `<span class="prob-nav-dot"></span>${p.num}`;
+      btn.addEventListener('click', () => renderDetail(i));
+      nav.appendChild(btn);
+    });
+
+    const lst = document.getElementById('probListCol');
+    probs.forEach((p, i) => {
+      const item = document.createElement('div');
+      item.className = 'prob-item' + (i === 0 ? ' selected' : '');
+      item.innerHTML = `
+        <div class="prob-item-num">${p.num}</div>
+        <span class="prob-item-icon">${p.icon}</span>
+        <div class="prob-item-info">
+          <div class="prob-item-title">${p.title}</div>
+          <div class="prob-item-mini"><div class="prob-item-mini-fill" style="width:${p.severity}%"></div></div>
+        </div>
+        <span class="prob-item-arrow">▶</span>`;
+      item.addEventListener('click', () => renderDetail(i));
+      lst.appendChild(item);
+    });
+  }
+
+  function renderDetail(idx) {
+    const p = probs[idx];
+    document.getElementById('probDetPanel').dataset.num = p.num;
+    document.getElementById('pIcon').textContent  = p.icon;
+    document.getElementById('pTitle').textContent = p.title;
+    document.getElementById('pText').textContent  = p.text;
+    document.getElementById('pMl1').textContent   = p.ml1;
+    document.getElementById('pMl2').textContent   = p.ml2;
+    document.getElementById('pMl3').textContent   = p.ml3;
+    document.getElementById('pTags').innerHTML    = p.tags.map(t => `<span class="prob-tag">${t}</span>`).join('');
+
+    ['pSev','pM1','pM2','pM3'].forEach(id => document.getElementById(id).style.width = '0');
+    setTimeout(() => {
+      document.getElementById('pSev').style.width = p.severity + '%';
+      document.getElementById('pM1').style.width  = p.m1 + '%';
+      document.getElementById('pM2').style.width  = p.m2 + '%';
+      document.getElementById('pM3').style.width  = p.m3 + '%';
+    }, 60);
+
+    document.querySelectorAll('.prob-item').forEach((el, i)     => el.classList.toggle('selected', i === idx));
+    document.querySelectorAll('.prob-nav-btn').forEach((el, i)  => el.classList.toggle('active',   i === idx));
+  }
+
+  buildUI();
+  renderDetail(0);
+})();
+</script>
+</body>
+</html>
