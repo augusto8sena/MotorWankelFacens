@@ -136,6 +136,7 @@ section{position:relative;z-index:1;padding:6rem 0}
 #timeline{background:var(--bg3)}
 .timeline-wrap{position:relative;margin-top:3rem;padding:1rem 0}
 .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--blue-deep) 10%,var(--blue) 50%,var(--blue-deep) 90%,transparent);transform:translateX(-50%)}
+.timeline-progress{position:absolute;left:50%;top:0;width:2px;height:0;background:linear-gradient(180deg,var(--blue-bright),var(--blue),var(--blue-deep));transform:translateX(-50%);transition:height .1s linear;box-shadow:0 0 15px var(--blue),0 0 30px rgba(79,195,247,.5);z-index:1}
 .tl-item{display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;margin-bottom:1.5rem;opacity:0;transform:translateY(20px);transition:all .6s ease}
 .tl-item.visible{opacity:1;transform:translateY(0)}
 .tl-item:nth-child(odd) .tl-content{grid-column:1;text-align:right;padding-right:2rem}
@@ -145,6 +146,7 @@ section{position:relative;z-index:1;padding:6rem 0}
 .tl-node{grid-column:2;display:flex;align-items:center;justify-content:center;z-index:2}
 .tl-dot{width:14px;height:14px;border-radius:50%;background:var(--bg3);border:2px solid var(--blue);box-shadow:0 0 12px var(--blue-glow);transition:all .3s}
 .tl-item.visible .tl-dot{box-shadow:0 0 20px var(--blue),0 0 40px rgba(79,195,247,.3)}
+.tl-dot.lit{background:var(--blue-bright);box-shadow:0 0 25px var(--blue-bright),0 0 50px rgba(0,229,255,.7);transform:scale(1.3)}
 .tl-year{font-size:1.3rem;font-weight:900;color:var(--blue);letter-spacing:-.02em;margin-bottom:.3rem}
 .tl-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
 .tl-text{font-size:.78rem;color:var(--text-dim);line-height:1.5}
@@ -443,6 +445,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
     </div>
     <div class="timeline-wrap">
       <div class="timeline-line"></div>
+      <div class="timeline-progress" id="timelineProgress"></div>
       <div class="timeline-events">
         <div class="tl-item"><div class="tl-content"><div class="tl-year">1954</div><div class="tl-title">Patente Registrada</div><div class="tl-text">Felix Wankel registra a patente do motor rotativo junto à NSU Motorenwerke AG na Alemanha.</div></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-empty"></div></div>
         <div class="tl-item"><div class="tl-empty"></div><div class="tl-node"><div class="tl-dot"></div></div><div class="tl-content"><div class="tl-year">1957</div><div class="tl-title">Primeiro Teste Operacional</div><div class="tl-text">O protótipo DKM 54 é testado com sucesso, atingindo 17.000 rpm. Resultado surpreende toda a equipe.</div></div></div>
@@ -676,6 +679,52 @@ function setPhase(idx, btn) {
   }
 
   cycleLoop();
+})();
+
+// TIMELINE SCROLL PROGRESS
+(function(){
+  const timelineSection = document.getElementById('timeline');
+  const progressBar = document.getElementById('timelineProgress');
+  if(!timelineSection || !progressBar) return;
+
+  function updateTimelineProgress() {
+    const rect = timelineSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = timelineSection.offsetHeight;
+    
+    // Calcular quanto da seção está visível na viewport
+    const startVisible = Math.max(0, -rect.top);
+    const endVisible = Math.min(sectionHeight, windowHeight - rect.top);
+    
+    // Calcular percentual de progresso (0 a 1)
+    const progress = Math.max(0, Math.min(1, (startVisible + (endVisible - startVisible) / 2) / sectionHeight));
+    
+    // Aplicar ao elemento de progresso
+    const wrapElement = timelineSection.querySelector('.timeline-wrap');
+    if(wrapElement) {
+      const wrapHeight = wrapElement.offsetHeight;
+      progressBar.style.height = (progress * wrapHeight) + 'px';
+      
+      // Acender as bolinhas que estão dentro do progresso
+      const items = wrapElement.querySelectorAll('.tl-item');
+      items.forEach((item) => {
+        const itemTop = item.offsetTop;
+        const progressHeight = progress * wrapHeight;
+        
+        const dot = item.querySelector('.tl-dot');
+        if(dot) {
+          if(progressHeight >= itemTop) {
+            dot.classList.add('lit');
+          } else {
+            dot.classList.remove('lit');
+          }
+        }
+      });
+    }
+  }
+
+  window.addEventListener('scroll', updateTimelineProgress, { passive: true });
+  updateTimelineProgress();
 })();
 
 </script>
