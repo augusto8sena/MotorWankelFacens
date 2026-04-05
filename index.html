@@ -232,6 +232,15 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
 .fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
 .scroll-indicator{position:fixed;top:0;left:0;height:3px;z-index:2000;background:linear-gradient(90deg,var(--blue-deep),var(--blue-bright));box-shadow:0 0 8px var(--blue);transition:width .1s;width:0}
+/* COMPONENTES */
+.comp-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1rem;border-radius:12px;border:1px solid rgba(79,195,247,.15);background:rgba(10,20,40,.5);cursor:pointer;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;transition:all .3s;position:relative;overflow:hidden}
+.comp-btn:hover{border-color:rgba(79,195,247,.35);background:rgba(79,195,247,.08);color:var(--text)}
+.comp-btn.active{background:linear-gradient(135deg,rgba(79,195,247,.2),rgba(79,195,247,.1));border-color:var(--blue);color:var(--blue);box-shadow:0 0 20px rgba(79,195,247,.2)}
+.comp-btn-dot{width:8px;height:8px;border-radius:50%;background:rgba(79,195,247,.3);transition:all .3s}
+.comp-btn.active .comp-btn-dot{background:var(--blue);box-shadow:0 0 8px var(--blue)}
+.comp-btn-text{text-align:center;line-height:1.3}
+.comp-detail-title{animation:fadeUp .4s ease}
+.comp-detail-desc{animation:fadeUp .4s .1s ease both}
 @media(max-width:900px){
   .about-grid,.engine-interactive,.comp-head-row,.comp-data-row,.bar-grid,.prob-main{grid-template-columns:1fr}
   .comp-head-row,.comp-data-row{grid-template-columns:140px 1fr 1fr}
@@ -255,6 +264,8 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
   .car-img{height:280px}
   .hero-title{font-size:2.5rem}
   .comp-head-row,.comp-data-row{grid-template-columns:100px 1fr 1fr}
+  .comp-motor-grid{grid-template-columns:1fr !important}
+  .comp-buttons-grid{grid-template-columns:1fr !important}
 }
 </style>
 </head>
@@ -267,6 +278,7 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
     <li><a href="#about">Origem</a></li>
     <li><a href="#how">Funcionamento</a></li>
     <li><a href="#video">Vídeo</a></li>
+    <li><a href="#componentes">Componentes</a></li>
     <li><a href="#comparison">Comparação</a></li>
     <li><a href="#timeline">Cronologia</a></li>
     <li><a href="#cars">Automóveis</a></li>
@@ -407,6 +419,75 @@ footer{padding:3rem 2rem 2rem;text-align:center;background:var(--bg);border-top:
         <source src="midia/kk.mp4" type="video/mp4">
         Seu navegador não suporta o elemento de vídeo.
       </video>
+    </div>
+  </div>
+</section>
+
+<!-- COMPONENTES -->
+<section id="componentes" style="background:var(--bg3)">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Estrutura Mecânica</div>
+      <h2 class="section-title">Componentes <em>Principais</em></h2>
+      <p style="color:var(--text-dim);font-size:.9rem;max-width:640px;margin-bottom:2.5rem">Explore cada um dos componentes fundamentais que compõem o motor Wankel. Clique em qualquer componente para visualizar detalhes técnicos.</p>
+    </div>
+
+    <div class="comp-motor-grid" style="display:grid;grid-template-columns:1fr;gap:2rem;align-items:start;margin-top:3rem">
+      <!-- Linha 1: Imagem e Botões lado a lado -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+        <!-- Área para a imagem -->
+        <div class="motor-image-area" style="position:relative;width:100%;aspect-ratio:1/1;border-radius:20px;border:1px solid rgba(79,195,247,.15);background:rgba(10,20,40,.6);display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow:hidden">
+          <img id="comp-image" src="midia/peças/1.jpg" alt="Componente do motor" style="max-width:100%;max-height:100%;object-fit:contain;width:auto;height:auto;border-radius:16px">
+        </div>
+
+        <!-- Botões dos Componentes -->
+        <div class="comp-buttons-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">
+          <button class="comp-btn active" data-component="engrenagem-fixa" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Engrenagem Fixa</span>
+          </button>
+          <button class="comp-btn" data-component="involucro-central" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Invólucro Central</span>
+          </button>
+          <button class="comp-btn" data-component="rotor-triangular" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Rotor Triangular</span>
+          </button>
+          <button class="comp-btn" data-component="arvore-excentrica" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Árvore Excêntrica</span>
+          </button>
+          <button class="comp-btn" data-component="placa-lateral" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Placa Lateral</span>
+          </button>
+          <button class="comp-btn" data-component="volante" onclick="selectComponent(this)">
+            <span class="comp-btn-dot"></span>
+            <span class="comp-btn-text">Volante</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Linha 2: Painel de Detalhes em full width -->
+      <div class="comp-detail-panel glass" style="padding:1.8rem;display:flex;flex-direction:column;justify-content:space-between;width:100%">
+        <div>
+          <div class="comp-detail-title" style="font-size:1.2rem;font-weight:800;color:var(--blue);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:.1em">Engrenagem Fixa</div>
+          <div class="comp-detail-desc" style="font-size:.9rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.2rem">
+            Componente fixo responsável pelo engrenamento com a coroa móvel do rotor. Mantém a posição correta durante toda rotação.
+          </div>
+          <div style="display:flex;gap:0.8rem">
+            <div style="flex:1;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:0.8rem">
+              <div style="font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:0.3rem">Função</div>
+              <div class="comp-func-value" style="font-size:.82rem;color:var(--text);font-weight:700">Engrenamento</div>
+            </div>
+            <div style="flex:1;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.15);border-radius:8px;padding:0.8rem">
+              <div style="font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:0.3rem">Localização</div>
+              <div class="comp-loc-value" style="font-size:.82rem;color:var(--text);font-weight:700">Câmara</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -895,6 +976,97 @@ function setPhase(idx, btn) {
   buildUI();
   renderDetail(0);
 })();
+
+// COMPONENTES DO MOTOR
+const componentesData = {
+  'engrenagem-fixa': {
+    titulo: 'Engrenagem Fixa',
+    descricao: 'Componente estacionário responsável pelo engrenamento com a engrenagem do rotor. Mantém a sincronização e controla o movimento rotativo do rotor triangular durante todo o ciclo do motor.',
+    funcao: 'Engrenamento',
+    localizacao: 'Câmara Central',
+    imagem: 'midia/peças/1.jpg'
+  },
+  'involucro-central': {
+    titulo: 'Invólucro Central',
+    descricao: 'Estrutura que envolve completamente a câmara de combustão, com a forma característica em "oito" (epitrocoide). Contém as aberturas para admissão e escape, definindo a geometria fundamental do motor.',
+    funcao: 'Confinamento',
+    localizacao: 'Centro',
+    imagem: 'midia/peças/2.jpg'
+  },
+  'rotor-triangular': {
+    titulo: 'Rotor Triangular',
+    descricao: 'Componente móvel de formato triangular com lados ligeiramente curvados. Realiza o movimento rotativo excêntrico dentro da câmara, criando as câmaras de expansão e compressão que executam os ciclos termodinâmicos.',
+    funcao: 'Movimento Rotativo',
+    localizacao: 'Centro',
+    imagem: 'midia/peças/3.jpg'
+  },
+  'arvore-excentrica': {
+    titulo: 'Árvore Excêntrica',
+    descricao: 'Eixo excêntrico que transmite o movimento do rotor para o exterior do motor. O deslocamento excêntrico (offset) em relação ao seu próprio centro é fundamental para gerar a energia mecânica do motor.',
+    funcao: 'Transmissão de Movimento',
+    localizacao: 'Eixo Central',
+    imagem: 'midia/peças/4.jpg'
+  },
+  'placa-lateral': {
+    titulo: 'Placa Lateral',
+    descricao: 'Vedação lateral que fecha as câmaras de trabalho. Armazena as velas de ignição e aberturas para admissão de combustível, além de garantir a compressão dos gases durante os ciclos termodinâmicos.',
+    funcao: 'Vedação e Acesso',
+    localizacao: 'Lateral',
+    imagem: 'midia/peças/5.jpg'
+  },
+  'volante': {
+    titulo: 'Volante',
+    descricao: 'Disco de elevada inércia acoplado ao eixo de saída. Armazena energia cinética para manter a velocidade de rotação uniforme entre os ciclos de potência, melhorando a suavidade do funcionamento do motor.',
+    funcao: 'Estabilização da Rotação',
+    localizacao: 'Saída do Eixo',
+    imagem: 'midia/peças/6.jpg'
+  }
+};
+
+function selectComponent(button) {
+  // Remove classe active de todos os botões
+  document.querySelectorAll('.comp-btn').forEach(btn => btn.classList.remove('active'));
+  
+  // Adiciona classe active ao botão clicado
+  button.classList.add('active');
+  
+  // Pega o ID do componente
+  const componentId = button.getAttribute('data-component');
+  const data = componentesData[componentId];
+  
+  // Anima a transição
+  const title = document.querySelector('.comp-detail-title');
+  const desc = document.querySelector('.comp-detail-desc');
+  const funcCell = document.querySelector('.comp-func-value');
+  const locCell = document.querySelector('.comp-loc-value');
+  const imgElement = document.getElementById('comp-image');
+  
+  // Remove animação anterior
+  title.style.animation = 'none';
+  desc.style.animation = 'none';
+  if (imgElement) imgElement.style.animation = 'none';
+  
+  setTimeout(() => {
+    title.style.animation = '';
+    desc.style.animation = '';
+    if (imgElement) imgElement.style.animation = '';
+  }, 10);
+  
+  // Atualiza conteúdo
+  title.textContent = data.titulo;
+  desc.textContent = data.descricao;
+  if (funcCell) funcCell.textContent = data.funcao;
+  if (locCell) locCell.textContent = data.localizacao;
+  if (imgElement) imgElement.src = data.imagem;
+}
+
+// Inicializa primeiro componente como ativo ao carregar
+document.addEventListener('DOMContentLoaded', function() {
+  const firstBtn = document.querySelector('.comp-btn.active');
+  if (firstBtn) {
+    selectComponent(firstBtn);
+  }
+});
 
 </script>
 </body>
